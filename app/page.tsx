@@ -18,11 +18,11 @@ const App = () => {
     const { user, signOut } = useAuthenticator();
     const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
 
-    function listTodos() {
+    const listTodos = () => {
         client.models.Todo.observeQuery().subscribe({
             next: (data) => setTodos([...data.items]),
         });
-    }
+    };
 
     useEffect(() => {
         listTodos();
@@ -31,10 +31,14 @@ const App = () => {
     const createTodo = () => {
         client.models.Todo.create({
             content: window.prompt("Todo content"),
+            isDone: false,
         });
     };
     const deleteTodo = (id: string) => {
         client.models.Todo.delete({ id });
+    };
+    const updateTodo = (id: string, content: string) => {
+        client.models.Todo.update({ id, content: window.prompt("Todo content", content) });
     };
 
     return (
@@ -43,10 +47,24 @@ const App = () => {
             <button onClick={createTodo}>+ new</button>
             <ul>
                 {todos.map((todo) => (
-                    <li
-                        key={todo.id}
-                        onClick={() => deleteTodo(todo.id)}>
-                        {todo.content}
+                    <li key={todo.id}>
+                        <div
+                            style={{
+                                display: "flex",
+                                gap: 5,
+                            }}>
+                            <div style={{ flex: 1 }}>{todo.content}</div>
+                            <div
+                                style={{ cursor: "pointer" }}
+                                onClick={() => updateTodo(todo.id, todo.content ?? "")}>
+                                Edit
+                            </div>
+                            <div
+                                style={{ cursor: "pointer" }}
+                                onClick={() => deleteTodo(todo.id)}>
+                                Delete
+                            </div>
+                        </div>
                     </li>
                 ))}
             </ul>
