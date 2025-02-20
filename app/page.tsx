@@ -14,7 +14,7 @@ Amplify.configure(outputs);
 
 const client = generateClient<Schema>();
 
-export function App() {
+const App = () => {
     const { signOut } = useAuthenticator();
     const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
 
@@ -58,7 +58,7 @@ export function App() {
             <button onClick={signOut}>Sign out</button>
         </main>
     );
-}
+};
 
 export default function Main() {
     return (
